@@ -13,7 +13,7 @@ contract NFT is ERC721URIStorage  {
   constructor() ERC721("MyNFT", "NFT") {}
   
   //Mint New NFT
-  function mint(string memory _tokenURI) external returns(uint newTokenCount) {
+  function mint(string memory _tokenURI) external returns(uint) {
     tokenCount ++;
     _safeMint(msg.sender, tokenCount);
     _setTokenURI(tokenCount, _tokenURI);
