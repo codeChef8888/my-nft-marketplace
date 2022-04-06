@@ -89,8 +89,8 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
       // get total price of item (item price + fee)
       let totalPrice = await marketPlace.methods.getTotalPrice1155(item.itemId, amount).call();
       console.log([amount, totalPrice.toString()], "nft1155 selling price")
-      let money = window.web3.utils.toWei('10', 'ether');
       await marketPlace.methods.purchaseItem1155(item.itemId, amount).send({ from: account, value: totalPrice}).on('transactionHash', (hash) => {
+        toggle(); // Modal Banda
         setloading(false);
 
       });
@@ -143,7 +143,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
           </div>
           : (
             <main style={{ padding: "1rem 0" }}>
-              <h2>No listed assets</h2>
+              <h2>Sold Out!!! (NFT721)</h2>
             </main>
           )}
       </div>
@@ -161,7 +161,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
                         {item.description}
                       </Card.Text>
                       <Card.Text>
-                        {item.amount}
+                      No. of NFTs: {item.amount}
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer>
@@ -177,7 +177,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
           </div>
           : (
             <main style={{ padding: "1rem 0" }}>
-              <h2>No listed assets</h2>
+              <h2>Sold Out!!! (NFT1155)</h2>
             </main>
           )}
       </div>

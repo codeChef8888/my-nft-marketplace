@@ -1,6 +1,6 @@
-import React, {Component, useState } from 'react'
+import React, {Component} from 'react'
 import ReactDOM from 'react-dom';
-import { Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 class Modal extends Component {
 

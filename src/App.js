@@ -9,8 +9,8 @@ import Navigation from './components/NavBar';
 import Home from './components/Home.js'
 import CreateNFT from './components/CreateNFT.js'
 import CreateNFT1155 from './components/CreateNFT1155.js'
-import MyListedItems from './components/MyListedNFTs.js'
-import MyPurchases from './components/MyPurchases.js'
+import MyAuctionedNFTs from './components/MyAuctionedNFTs.js'
+import MyPurchases from './components/MyPurchasedNFTs.js'
 import './App.css';
 
 
@@ -176,8 +176,8 @@ class App extends Component {
                 <Route path="/" element={<Home account={this.state.account} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155}/>} />
                 <Route path="/createNFT" element={<CreateNFT marketPlace={this.state.marketPlace} nft={this.state.nft} account={this.state.account} />} />
                 <Route path="/createNFT1155" element={<CreateNFT1155 marketPlace={this.state.marketPlace} nft1155={this.state.nft1155} account={this.state.account} />} />
-                <Route path="/my-listed-nfts" />
-                <Route path="/my-purchases" />
+                <Route path="/my-listed-nfts" element={<MyAuctionedNFTs marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />
+                <Route path="/my-purchases" element={<MyPurchases marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />
               </Routes>
             )}
           </div>
