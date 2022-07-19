@@ -4,7 +4,7 @@ import {
 } from "react-router-dom";
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import market from '../nft.png';
-
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 class Navigation extends Component {
     render() {
         return (
@@ -36,10 +36,7 @@ class Navigation extends Component {
 
                                 </Nav.Link>
                             ) : (
-                                <Button onClick={(event) => {
-                                    event.preventDefault();
-
-                                }} variant="outline-light">Connect Wallet</Button>
+                                <ConnectButton />
                             )}
                         </Nav>
                     </Navbar.Collapse>

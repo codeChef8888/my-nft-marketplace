@@ -10,7 +10,9 @@ import MyAuctionedNFTs from './components/MyAuctionedNFTs.js'
 import MyPurchases from './components/MyPurchasedNFTs.js'
 import { useNFT, useNFT1155, useMarketPlace } from './hooks/useContract';
 import './App.css';
-
+import { WagmiConfig } from "wagmi";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { chains, wagmiClient } from "./libs/rainbowKit";
 
 
 class App extends Component {
@@ -119,13 +121,17 @@ class App extends Component {
                 <p className='mx-3 my-0'>Awaiting Wallet Connection...</p>
               </div>
             ) : (
-              <Routes>
-                <Route path="/" element={<Home account={this.state.account} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} />} />
-                <Route path="/createNFT" element={<CreateNFT marketPlace={this.state.marketPlace} nft={this.state.nft} account={this.state.account} />} />
-                <Route path="/createNFT1155" element={<CreateNFT1155 marketPlace={this.state.marketPlace} nft1155={this.state.nft1155} account={this.state.account} />} />
-                <Route path="/my-listed-nfts" element={<MyAuctionedNFTs marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />
-                <Route path="/my-purchases" element={<MyPurchases marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />
-              </Routes>
+              <WagmiConfig client={wagmiClient}>
+                <RainbowKitProvider chains={chains}>
+                  <Routes>
+                    <Route path="/" element={<Home account={this.state.account} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} />} />
+                    <Route path="/createNFT" element={<CreateNFT marketPlace={this.state.marketPlace} nft={this.state.nft} account={this.state.account} />} />
+                    <Route path="/createNFT1155" element={<CreateNFT1155 marketPlace={this.state.marketPlace} nft1155={this.state.nft1155} account={this.state.account} />} />
+                    <Route path="/my-listed-nfts" element={<MyAuctionedNFTs marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />
+                    <Route path="/my-purchases" element={<MyPurchases marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />
+                  </Routes>
+                </RainbowKitProvider>
+              </WagmiConfig>
             )}
           </div>
         </div>

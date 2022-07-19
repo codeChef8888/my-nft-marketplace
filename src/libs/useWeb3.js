@@ -1,4 +1,4 @@
-import Web3 from 'web3/dist/web3.min.js';
+import Web3 from 'web3';
 import getRpcUrl from "./getRpcUrl";
 
 export const useWeb3 = () => {
