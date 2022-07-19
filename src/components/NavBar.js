@@ -5,8 +5,8 @@ import {
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import market from '../nft.png';
 
-class Navigation extends Component{
-    render (){
+class Navigation extends Component {
+    render() {
         return (
             <Navbar expand="lg" bg="secondary" variant="dark">
                 <Container>
@@ -38,7 +38,7 @@ class Navigation extends Component{
                             ) : (
                                 <Button onClick={(event) => {
                                     event.preventDefault();
-                                 this.props.web3Connect();
+
                                 }} variant="outline-light">Connect Wallet</Button>
                             )}
                         </Nav>

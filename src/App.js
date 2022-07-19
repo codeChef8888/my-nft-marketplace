@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Spinner } from 'react-bootstrap';
 import Web3 from 'web3';
-import NFT from './truffle_abis/NFT.json';
-import NFT1155 from './truffle_abis/NFT1155.json';
-import Marketplace from './truffle_abis/Marketplace.json';
 import Navigation from './components/NavBar';
 import Home from './components/Home.js'
 import CreateNFT from './components/CreateNFT.js'
 import CreateNFT1155 from './components/CreateNFT1155.js'
 import MyAuctionedNFTs from './components/MyAuctionedNFTs.js'
 import MyPurchases from './components/MyPurchasedNFTs.js'
+import { useNFT, useNFT1155, useMarketPlace } from './hooks/useContract';
 import './App.css';
 
 
@@ -23,87 +21,36 @@ class App extends Component {
   //   await this.loadBlockchainData();
   // }
 
-  web3Handler = async () => {
-    await this.loadWeb3();
-    await this.loadBlockchainData();
-  }
 
 
-  async loadWeb3() {
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
-      await window.ethereum.enable();
-    }
-    else if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider);
-    }
-    else {
-      window.alert('Non ethereum browser detected. You should consider Metamask!');
-    }
-  }
+
 
   async loadBlockchainData() {
     const web3 = window.web3;
 
-    //Get the User Account from Ganache i.e in Ganache it's index is 1 here In account array it is the First i.e 0
-    const accounts = await web3.eth.getAccounts();
-    this.setState({ account: accounts[0] });
-    web3.eth.defaultAccount = accounts[0];
-
-    //3.Specify from which Ethereum network You are loading Using Network ID. 
-    const networkId = await web3.eth.net.getId();
-
     //Load NFT Contract
-    const nftData = NFT.networks[networkId];
-    //Check if the networkId exists
-    if (nftData) {
+    const nftContract = useNFT(); //import NFT json.
+    this.setState({ nft: nftContract });
 
-      //Load NFT721 Contract into const variable nftContract.
-      const nftContract = new web3.eth.Contract(NFT.abi, nftData.address); //import NFT json.
-      this.setState({ nft: nftContract });
 
-      //  //Get The Tether Balance of User
-      //  let tetherBalance = await tetherContract.methods.balanceOf(this.state.account).call(); //it's callback funciton
-      //  this.setState({tetherBalance: tetherBalance.toString()});
-    } else {
-      window.alert('Error, NFT contract not deployed - no detected network!!!')
-    }
 
-      //Load NFT1155 Contract
-      const nft1155Data = NFT1155.networks[networkId];
-      //Check if the networkId exists
-      if (nft1155Data) {
-  
-        //Load NFT1155 Contract into const variable nftContract.
-        const nft1155Contract = new web3.eth.Contract(NFT1155.abi, nft1155Data.address); //import NFT1155 json.
-        this.setState({ nft1155: nft1155Contract });
- 
-        //  //Get The Tether Balance of User
-        //  let tetherBalance = await tetherContract.methods.balanceOf(this.state.account).call(); //it's callback funciton
-        //  this.setState({tetherBalance: tetherBalance.toString()});
-      } else {
-        window.alert('Error, NFT1155 contract not deployed - no detected network!!!')
-      }
+    //Load NFT1155 Contract into const variable nftContract.
+    const nft1155Contract = useNFT1155();
+    this.setState({ nft1155: nft1155Contract });
 
-    //Load Marketplace Contract
-    const marketPlaceData = Marketplace.networks[networkId];
-    //Check if the networkId exists
-    if (marketPlaceData) {
 
-      //Load Marketplace Contract into const variable tether.
-      const marketPlaceContract = new web3.eth.Contract(Marketplace.abi, marketPlaceData.address); //import Marketplace json.
+    //Load Marketplace Contract into const variable tether.
+    const marketPlaceContract = useMarketPlace();
+    console.log(marketPlaceContract, "marketplace");
+    this.setState({ marketPlace: marketPlaceContract });
 
-      this.setState({ marketPlace: marketPlaceContract });
 
-      //  //Get The Tether Balance of User
-      //  let rwdBalance = await rwdContract.methods.balanceOf(this.state.account).call(); //it's callback funciton
-      //  this.setState({rwdBalance: rwdBalance.toString()});
-
-    } else {
-      window.alert('Error, Marketplace contract not deployed - no detected network!!!')
-    }
 
     this.setState({ loading: false })
+  }
+
+  componentDidMount() {
+    this.loadBlockchainData();
   }
 
   // //Load the List of NFTs 
@@ -173,7 +120,7 @@ class App extends Component {
               </div>
             ) : (
               <Routes>
-                <Route path="/" element={<Home account={this.state.account} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155}/>} />
+                <Route path="/" element={<Home account={this.state.account} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} />} />
                 <Route path="/createNFT" element={<CreateNFT marketPlace={this.state.marketPlace} nft={this.state.nft} account={this.state.account} />} />
                 <Route path="/createNFT1155" element={<CreateNFT1155 marketPlace={this.state.marketPlace} nft1155={this.state.nft1155} account={this.state.account} />} />
                 <Route path="/my-listed-nfts" element={<MyAuctionedNFTs marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />
