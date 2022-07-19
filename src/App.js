@@ -10,7 +10,7 @@ import MyAuctionedNFTs from './components/MyAuctionedNFTs.js'
 import MyPurchases from './components/MyPurchasedNFTs.js'
 import { useNFT, useNFT1155, useMarketPlace } from './hooks/useContract';
 import './App.css';
-import { WagmiConfig } from "wagmi";
+import { useAccount, WagmiConfig } from "wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { chains, wagmiClient } from "./libs/rainbowKit";
 
@@ -29,7 +29,6 @@ class App extends Component {
 
   async loadBlockchainData() {
     const web3 = window.web3;
-
     //Load NFT Contract
     const nftContract = useNFT(); //import NFT json.
     this.setState({ nft: nftContract });
@@ -93,7 +92,9 @@ class App extends Component {
   //   await this.state.marketPlace.methods.purchaseItem(item.itemid, { value: item.price }).call();
   //   this.loadMarketplaceItems();
   // }
-
+  setCurrentUser(addr) {
+    this.setState({ account: addr });
+  }
   //2. Set The States
   constructor(props) {
     super(props);
@@ -124,7 +125,7 @@ class App extends Component {
               <WagmiConfig client={wagmiClient}>
                 <RainbowKitProvider chains={chains}>
                   <Routes>
-                    <Route path="/" element={<Home account={this.state.account} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} />} />
+                    <Route path="/" element={<Home setCurrentUser={this.state.setCurrentUser} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} />} />
                     <Route path="/createNFT" element={<CreateNFT marketPlace={this.state.marketPlace} nft={this.state.nft} account={this.state.account} />} />
                     <Route path="/createNFT1155" element={<CreateNFT1155 marketPlace={this.state.marketPlace} nft1155={this.state.nft1155} account={this.state.account} />} />
                     <Route path="/my-listed-nfts" element={<MyAuctionedNFTs marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} />} />

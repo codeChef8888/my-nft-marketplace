@@ -1,8 +1,13 @@
 import { throws } from 'assert';
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
+import { useWeb3 } from '../libs/useWeb3';
+import { useAccount } from 'wagmi'
 
-export default function MyPurchases({ marketPlace, nft, nft1155, account }) {
+export default function MyPurchases({ marketPlace, nft, nft1155 }) {
+    const web3 = useWeb3();
+    const { address, isConnected } = useAccount();
+    const account = address;
     const [loading, setLoading] = useState(true);
     const [purchases, setPurchases] = useState([]);
 
@@ -17,17 +22,18 @@ export default function MyPurchases({ marketPlace, nft, nft1155, account }) {
         }
         const result = await marketPlace.getPastEvents('Bought', filterOptions).then(results => {
             console.log(results);
-            getNFTs(results);})
+            getNFTs(results);
+        })
             .catch(err => console.log(err));
 
-            async function getNFTs(results)  {
+        async function getNFTs(results) {
 
             const purchases = await Promise.all(results.map(async payload => {
                 // fetch arguments from each result
-            //    i.events.Bought.returnValues[];
-               let item = payload.returnValues;
+                //    i.events.Bought.returnValues[];
+                let item = payload.returnValues;
                 console.log([], "this is the argument");
-               // get uri url from nft contract
+                // get uri url from nft contract
                 const uri = await nft.methods.tokenURI(item.tokenId).call();
                 // use uri to fetch the nft metadata stored on ipfs 
                 // use uri to fetch the nft metadata stored on ipfs 
@@ -72,7 +78,7 @@ export default function MyPurchases({ marketPlace, nft, nft1155, account }) {
                             <Col key={idx} className="overflow-hidden">
                                 <Card>
                                     <Card.Img variant="top" src={item.image} />
-                                    <Card.Footer>{window.web3.utils.fromWei(item.totalPrice, 'ether')} ETH</Card.Footer>
+                                    <Card.Footer>{web3.utils.fromWei(item.totalPrice, 'ether')} ETH</Card.Footer>
                                 </Card>
                             </Col>
                         ))}

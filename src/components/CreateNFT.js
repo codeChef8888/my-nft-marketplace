@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
+import Web3 from 'web3'
 import { Row, Form, Button } from 'react-bootstrap'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
+import { useAccount } from 'wagmi'
+import { useWeb3 } from '../libs/useWeb3';
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
-const Create = ({ marketPlace, nft, account }) => {
-  // let web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
+const Create = ({ marketPlace, nft }) => {
+
+  // let web3 = new Web3(Web3.givenProvider || process.env.REACT_APP_RPC_URL);
+  const web3 = useWeb3();
+  const { address, isConnected } = useAccount();
+  const account = address;
   const [image, setImage] = useState('')
   const [price, setPrice] = useState(null)
   const [name, setName] = useState('')
@@ -16,7 +23,7 @@ const Create = ({ marketPlace, nft, account }) => {
     if (typeof file !== 'undefined') {
       try {
         const result = await client.add(file); // IPFS client
-        console.log(result);
+        console.log(result, "yo result ho");
         setImage(`https://ipfs.infura.io/ipfs/${result.path}`); //setting the Image to the link where we can img file on IPFS
       } catch (error) {
         console.log("ipfs image upload error: ", error);
@@ -52,15 +59,16 @@ const Create = ({ marketPlace, nft, account }) => {
       console.log(marketPlace._address, 'this is the market addresss');
 
       // add nft to marketplace
-      const listingPrice = window.web3.utils.toWei(price.toString(), 'ether');
+      const listingPrice = web3.utils.toWei(price.toString(), 'ether');
       console.log(listingPrice, 'this is the NFT price in wei');
       // approve marketplace to spend nft
 
       await nft.methods.setApprovalForAll(marketPlace._address, true).send({ from: account })
         .on('transactionHash', (hash) => {
-          console.log("la chireyma NFT banauna lai");
+          console.log([nft._address, tokenId, listingPrice], "la chireyma NFT banauna lai");
           marketPlace.methods.makeItem(nft._address, tokenId, listingPrice).send({ from: account })
             .on('transactionHash', (hash) => {
+              console.log("hum Idharr");
               const totalItem = marketPlace.methods.itemCount().call();
               console.log(totalItem, "la banyou tmro NFT lai");
             });

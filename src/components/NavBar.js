@@ -5,6 +5,7 @@ import {
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import market from '../nft.png';
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 class Navigation extends Component {
     render() {
         return (
@@ -24,20 +25,9 @@ class Navigation extends Component {
                             <Nav.Link as={Link} to="/my-purchases">My Purchases</Nav.Link>
                         </Nav>
                         <Nav>
-                            {this.props.account ? (
-                                <Nav.Link
-                                    href={`https://etherscan.io/address/${this.props.account}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="button nav-button btn-sm mx-4">
-                                    <Button variant="outline-light">
-                                        {this.props.account.slice(0, 5) + '...' + this.props.account.slice(38, 42)}
-                                    </Button>
 
-                                </Nav.Link>
-                            ) : (
-                                <ConnectButton />
-                            )}
+                            <ConnectButton />
+
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
-
+import { useWeb3 } from '../libs/useWeb3';
+const web3 = useWeb3();
 function renderSoldItems(items) {
     return (
         <>
@@ -11,7 +12,7 @@ function renderSoldItems(items) {
                         <Card>
                             <Card.Img variant="top" src={item.image} />
                             <Card.Footer>
-                                For {window.web3.utils.fromWei(item.totalPrice, 'ether')} ETH - Recieved {window.web3.utils.fromWei(item.price, 'ether')} ETH
+                                For {web3.utils.fromWei(item.totalPrice, 'ether')} ETH - Recieved {web3.utils.fromWei(item.price, 'ether')} ETH
                             </Card.Footer>
                         </Card>
                     </Col>
@@ -31,7 +32,7 @@ function renderSoldItems1155(items) {
                         <Card>
                             <Card.Img variant="top" src={item.image} />
                             <Card.Footer>
-                                For {window.web3.utils.fromWei(item.totalPrice, 'ether')} ETH - Recieved {window.web3.utils.fromWei(item.price, 'ether')} ETH
+                                For {web3.utils.fromWei(item.totalPrice, 'ether')} ETH - Recieved {web3.utils.fromWei(item.price, 'ether')} ETH
                             </Card.Footer>
                         </Card>
                     </Col>
@@ -149,7 +150,7 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account }) 
     return (
         <div className="flex justify-center">
             <div>
-            {soldItems.length > 0 && renderSoldItems(soldItems)}
+                {soldItems.length > 0 && renderSoldItems(soldItems)}
                 {listedItems.length > 0 ?
                     <div className="px-5 py-3 container">
                         <h2>Listed EC721</h2>
@@ -158,12 +159,12 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account }) 
                                 <Col key={idx} className="overflow-hidden">
                                     <Card>
                                         <Card.Img variant="top" src={item.image} />
-                                        <Card.Footer>{window.web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
+                                        <Card.Footer>{web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
                                     </Card>
                                 </Col>
                             ))}
                         </Row>
-    
+
                     </div>
                     : (
                         <main style={{ padding: "1rem 0" }}>
@@ -172,7 +173,7 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account }) 
                     )}
             </div>
             <div>
-            {soldItems1155.length > 0 && renderSoldItems1155(soldItems1155)}
+                {soldItems1155.length > 0 && renderSoldItems1155(soldItems1155)}
                 {listedItems1155.length > 0 ?
                     <div className="px-5 py-3 container">
                         <h2>Listed ERC1155</h2>
@@ -181,12 +182,12 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account }) 
                                 <Col key={idx} className="overflow-hidden">
                                     <Card>
                                         <Card.Img variant="top" src={item.image} />
-                                        <Card.Footer>{window.web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
+                                        <Card.Footer>{web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
                                     </Card>
                                 </Col>
                             ))}
                         </Row>
-                      
+
                     </div>
                     : (
                         <main style={{ padding: "1rem 0" }}>

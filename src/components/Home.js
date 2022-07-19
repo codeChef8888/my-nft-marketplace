@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import Modal1155 from './BuyModalNFT1155';
 import useModal1155 from '../hooks/useModal';
-
-const Home = ({ account, marketPlace, nft, nft1155 }) => {
+import { useWeb3 } from '../libs/useWeb3';
+import { useAccount } from 'wagmi'
+const Home = ({ marketPlace, nft, nft1155 }) => {
   //Setting up our required state variables.
+  const web3 = useWeb3();
+  const { address, isConnected } = useAccount();
+  const account = address;
   const [loading, setloading] = useState(true);
   const [items, setItems] = useState([]);
   const [items1155, setItems1155] = useState([]);
@@ -79,6 +83,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
 
   const buyMarketNFT721 = async (item) => {
     try {
+      console.log("ma buy ma xu...");
       await marketPlace.methods.purchaseItem(item.itemId).send({ from: account, value: item.totalPrice }).on('transactionHash', (hash) => {
         setloading(false);
 
@@ -138,7 +143,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
                     <Card.Footer>
                       <div className='d-grid'>
                         <Button onClick={() => buyMarketNFT721(item)} variant="primary" size="lg">
-                          Buy for {window.web3.utils.fromWei(item.totalPrice, 'ether')} ETH
+                          Buy for {web3.utils.fromWei(item.totalPrice, 'ether')} ETH
                         </Button>
                       </div>
                     </Card.Footer>
