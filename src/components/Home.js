@@ -11,6 +11,7 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
   const account = address;
   const [loading, setloading] = useState(true);
   const [items, setItems] = useState([]);
+  const [countItem, setCountItem] = useState('');
   const [items1155, setItems1155] = useState([]);
 
   const { isShowing, toggle } = useModal1155();
@@ -19,9 +20,11 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
   const loadMarketplaceItems = async () => {
     // Load all unsold items
     var itemCount;
+
     console.log(marketPlace, "yo bhitra chireypachi")
     try {
       itemCount = await marketPlace.methods.itemCount().call();
+      setCountItem(itemCount.length);
     } catch (e) {
       console.log(e.message);
     }
@@ -132,7 +135,7 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
   return (
     <div className="flex justify-center">
       <div>
-        {items.length > 0 ?
+        {countItem > 0 ?
           <div className="px-5 container">
             <Row xs={1} md={2} lg={4} className="g-4 py-5">
               {items.map((item, idx) => (
