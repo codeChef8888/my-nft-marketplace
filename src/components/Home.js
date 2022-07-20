@@ -84,20 +84,23 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
   };
 
   const buyMarketNFT721 = async (item) => {
-    try {
-      console.log("ma buy ma xu...");
-      await marketPlace.methods.purchaseItem(item.itemId).send({ from: account, value: item.totalPrice }).on('transactionHash', (hash) => {
-        setloading(false);
-
-      });
-    } catch (error) {
-      console.log(error)
+    if (item.seller !== account) {
+      try {
+        await marketPlace.methods.purchaseItem(item.itemId).send({ from: account, value: item.totalPrice }).on('transactionHash', (hash) => {
+          setloading(false);
+        });
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      alert("This NFT Belongs to you!!!");
     }
 
     loadMarketplaceItems();
   };
 
   const buyMarketNFT1155 = async (item, amount) => {
+
     try {
       // get total price of item (item price + fee)
       let totalPrice = await marketPlace.methods.getTotalPrice1155(item.itemId, amount).call();
@@ -144,7 +147,11 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
                     </Card.Body>
                     <Card.Footer>
                       <div className='d-grid'>
-                        <Button onClick={() => buyMarketNFT721(item)} variant="primary" size="lg">
+                        <Button onClick={() => {
+                          if (isConnected)
+                            buyMarketNFT721(item)
+                          else alert("Please Connect Your Wallet First")
+                        }} variant="primary" size="lg">
                           Buy for {web3.utils.fromWei(item.totalPrice, 'ether')} ETH
                         </Button>
                       </div>
