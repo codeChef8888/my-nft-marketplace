@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 import { useWeb3 } from '../libs/useWeb3';
+import { useAccount } from 'wagmi'
 const web3 = useWeb3();
+
+let account;
 function renderSoldItems(items) {
     return (
         <>
@@ -41,7 +44,9 @@ function renderSoldItems1155(items) {
         </>
     )
 }
-export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account }) {
+export default function MyAuctionedNFTs({ marketPlace, nft, nft1155 }) {
+    const { address } = useAccount();
+    account = address;
     const [loading, setLoading] = useState(true);
     //Setting State Var. for NFT721
     const [listedItems, setListedItems] = useState([]);

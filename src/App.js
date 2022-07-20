@@ -114,7 +114,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="App">
-          <Navigation web3Connect={this.web3Handler} account={this.state.account} />
+          <Navigation account={this.state.account} />
           <div>
             {this.state.loading ? (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>

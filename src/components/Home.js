@@ -28,6 +28,7 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
     let items = [];
     for (let i = 1; i <= itemCount; i++) {
       const item = await marketPlace.methods.items(i).call();
+
       if (!item.sold) {
         // get uri url from nft contract
         const uri = await nft.methods.tokenURI(item.itemid).call();
@@ -37,6 +38,7 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
         // get total price of item (item price + fee)
         const totalPrice = await marketPlace.methods.getTotalPrice(item.itemid).call();
         // Add item to items array
+        console.log([item.itemid, metadata.name, metadata.image], "mero returned vava")
         items.push({
           totalPrice,
           itemId: item.itemid,
