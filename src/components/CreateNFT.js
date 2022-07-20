@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import Web3 from "web3";
 import { Row, Form, Button } from "react-bootstrap";
 import { create as ipfsHttpClient } from "ipfs-http-client";
-import { useAccount } from "wagmi";
-import { useWeb3 } from "../libs/useWeb3";
+
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
-const Create = ({ marketPlace, nft }) => {
+const Create = ({ marketPlace, nft, account, isConnected, web3 }) => {
+
   // let web3 = new Web3(Web3.givenProvider || process.env.REACT_APP_RPC_URL);
-  const web3 = useWeb3();
-  const { address, isConnected } = useAccount();
-  const account = address;
+  // const web3 = useWeb3();
+
   const [image, setImage] = useState("");
   const [price, setPrice] = useState(null);
   const [name, setName] = useState("");

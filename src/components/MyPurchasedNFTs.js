@@ -1,13 +1,9 @@
 import { throws } from 'assert';
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
-import { useWeb3 } from '../libs/useWeb3';
-import { useAccount } from 'wagmi'
 
-export default function MyPurchases({ marketPlace, nft, nft1155 }) {
-    const web3 = useWeb3();
-    const { address, isConnected } = useAccount();
-    const account = address;
+export default function MyPurchases({ marketPlace, nft, nft1155, account, isConnected, web3 }) {
+
     const [loading, setLoading] = useState(true);
     const [purchases, setPurchases] = useState([]);
 
@@ -61,12 +57,15 @@ export default function MyPurchases({ marketPlace, nft, nft1155 }) {
     }
 
     useEffect(() => {
-        loadPurchasedNFTs();
+        if (isConnected) { loadPurchasedNFTs(); }
+        else {
+            alert("Please Connect Your Wallet");
+        }
     }, []);
 
     if (loading) return (
         <main style={{ padding: "1rem 0" }}>
-            <h2>Loading...</h2>
+            {isConnected == true ? <h2>Loading...</h2> : (<h2>Connect Your Wallet...</h2>)}
         </main>
     )
     return (

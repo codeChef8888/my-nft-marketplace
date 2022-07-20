@@ -3,7 +3,7 @@ import { Row, Form, Button } from 'react-bootstrap'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
-const CreateNFT1155 = ({ marketPlace, nft1155, account }) => {
+const CreateNFT1155 = ({ marketPlace, nft1155, account, isConnected, web3 }) => {
 
     const [image, setImage] = useState('')
     const [price, setPrice] = useState(null)
@@ -56,10 +56,10 @@ const CreateNFT1155 = ({ marketPlace, nft1155, account }) => {
             console.log(marketPlace._address, 'this is the market addresss');
 
             // add nft1155 to marketplace
-            const listingPrice = window.web3.utils.toWei(price.toString(), 'ether');
+            const listingPrice = web3.utils.toWei(price.toString(), 'ether');
             console.log(listingPrice, 'this is the NFT price in wei');
 
-            
+
             await nft1155.methods.setApprovalForAll(marketPlace._address, true).send({ from: account })
                 .on('transactionHash', (hash) => {
                     console.log("la chireyma NFT banauna lai");

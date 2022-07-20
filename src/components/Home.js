@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import Modal1155 from './BuyModalNFT1155';
 import useModal1155 from '../hooks/useModal';
-import { useWeb3 } from '../libs/useWeb3';
+
 import { useAccount } from 'wagmi'
-const Home = ({ marketPlace, nft, nft1155 }) => {
+const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, web3 }) => {
   //Setting up our required state variables.
-  const web3 = useWeb3();
   const { address, isConnected } = useAccount();
   const account = address;
   const [loading, setloading] = useState(true);
@@ -126,6 +125,12 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
     loadMarketplaceItems1155();
   }, []);
 
+  useEffect(() => {
+    console.log("setting user account!!!");
+    setCurrentUser(account);
+    setUserActiveStatus(isConnected);
+  }, [account]);
+
   if (loading) return (
     <main style={{ padding: "1rem 0" }}>
       <h2>Loading....</h2>
@@ -135,7 +140,7 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
   return (
     <div className="flex justify-center">
       <div>
-        {countItem > 0 ?
+        {items.length > 0 ?
           <div className="px-5 container">
             <Row xs={1} md={2} lg={4} className="g-4 py-5">
               {items.map((item, idx) => (
@@ -189,8 +194,16 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
                     </Card.Body>
                     <Card.Footer>
                       <div className='d-grid'>
-                        <Button className="button-default" onClick={toggle}>Buy</Button>
-                        <Modal1155 isShowing={isShowing} toggle={toggle} buyMarketNFT1155={buyMarketNFT1155} item={item} />
+                        <Button className="button-default" onClick={
+                          () => {
+                            if (isConnected) {
+                              if (item.seller !== account)
+                                toggle();
+                              else alert("This NFT1155 belongs to you");
+                            } else alert("Connect Your wallet First!!!")
+                          }
+                        }>Buy</Button>
+                        <Modal1155 web3={web3} isShowing={isShowing} toggle={toggle} buyMarketNFT1155={buyMarketNFT1155} item={item} />
                       </div>
                     </Card.Footer>
                   </Card>
@@ -204,7 +217,7 @@ const Home = ({ marketPlace, nft, nft1155 }) => {
             </main>
           )}
       </div>
-    </div>
+    </div >
   );
 }
 

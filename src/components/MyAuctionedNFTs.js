@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 import { useWeb3 } from '../libs/useWeb3';
-import { useAccount } from 'wagmi'
 const web3 = useWeb3();
-
-let account;
 function renderSoldItems(items) {
     return (
         <>
@@ -44,9 +41,7 @@ function renderSoldItems1155(items) {
         </>
     )
 }
-export default function MyAuctionedNFTs({ marketPlace, nft, nft1155 }) {
-    const { address } = useAccount();
-    account = address;
+export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, isConnected, web3 }) {
     const [loading, setLoading] = useState(true);
     //Setting State Var. for NFT721
     const [listedItems, setListedItems] = useState([]);
@@ -143,13 +138,16 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155 }) {
     }
 
     useEffect(() => {
-        loadListedItems();
-        loadListedItems1155();
+        if (isConnected) {
+            loadListedItems();
+            loadListedItems1155();
+        }
+        else { alert("Connect your wallet first!!!"); }
     }, []);
 
     if (loading) return (
         <main style={{ padding: "1rem 0" }}>
-            <h2>Loading...</h2>
+            {isConnected == true ? <h2>Loading...</h2> : (<h2>Connect Your Wallet...</h2>)}
         </main>
     )
     return (
