@@ -12,7 +12,7 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
   const [items, setItems] = useState([]);
   const [countItem, setCountItem] = useState('');
   const [items1155, setItems1155] = useState([]);
-
+  const [itemTog1155, setItemTog1155] = useState('');
   const { isShowing, toggle } = useModal1155();
 
   //Function to Load NFT in MarketPlace for Display.
@@ -111,7 +111,7 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
       // get total price of item (item price + fee)
       console.log("1st Steeeeeeep");
       let totalPrice = await marketPlace.methods.getTotalPrice1155(item.itemId, amount).call();
-      console.log([amount, totalPrice.toString()], "nft1155 selling price")
+      console.log([item.itemId, amount, totalPrice.toString()], "nft1155 selling price")
       await marketPlace.methods.purchaseItem1155(item.itemId, amount).send({ from: account, value: totalPrice }).on('transactionHash', (hash) => {
         console.log("2nd stepppppppp")
         toggle(); // Modal Banda
@@ -203,13 +203,15 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
                         <Button className="button-default" onClick={
                           () => {
                             if (isConnected) {
-                              if (item.seller !== account)
+                              if (item.seller !== account) {
                                 toggle();
+                                setItemTog1155(item);
+                              }
                               else alert("This NFT1155 belongs to you");
                             } else alert("Connect Your wallet First!!!")
                           }
                         }>Buy</Button>
-                        <Modal1155 web3={web3} isShowing={isShowing} toggle={toggle} buyMarketNFT1155={buyMarketNFT1155} item={item} />
+                        <Modal1155 web3={web3} isShowing={isShowing} toggle={toggle} buyMarketNFT1155={buyMarketNFT1155} item={itemTog1155} />
                       </div>
                     </Card.Footer>
                   </Card>
