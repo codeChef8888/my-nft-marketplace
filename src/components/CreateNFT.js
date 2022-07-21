@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Web3 from "web3";
 import { Row, Form, Button } from "react-bootstrap";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 

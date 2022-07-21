@@ -10,7 +10,10 @@ function renderSoldItems(items) {
                 {items.map((item, idx) => (
                     <Col key={idx} className="overflow-hidden">
                         <Card>
-                            <Card.Img variant="top" src={item.image} />
+                            <Card.Body color="secondary">
+                                <Card.Title>{item.name}</Card.Title>
+                                <Card.Img variant="top" src={item.image} />
+                            </Card.Body>
                             <Card.Footer>
                                 For {web3.utils.fromWei(item.totalPrice, 'ether')} ETH - Recieved {web3.utils.fromWei(item.price, 'ether')} ETH
                             </Card.Footer>
@@ -30,7 +33,13 @@ function renderSoldItems1155(items) {
                 {items.map((item, idx) => (
                     <Col key={idx} className="overflow-hidden">
                         <Card>
-                            <Card.Img variant="top" src={item.image} />
+                            <Card.Body color="secondary">
+                                <Card.Title>{item.name}</Card.Title>
+                                <Card.Img variant="top" src={item.image} />
+                                <Card.Text>
+                                    No. of NFTs: {item.totalAmount - item.amount} / {item.totalAmount}
+                                </Card.Text>
+                            </Card.Body>
                             <Card.Footer>
                                 For {web3.utils.fromWei(item.totalPrice, 'ether')} ETH - Recieved {web3.utils.fromWei(item.price, 'ether')} ETH
                             </Card.Footer>
@@ -113,7 +122,7 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
                 const response = await fetch(tokenURI);
                 const metadata = await response.json();
                 // get total price of item (item price + fee)
-                const totalPrice = await marketPlace.methods.getTotalPrice(item1155.itemid).call();
+                const totalPrice = await marketPlace.methods.getTotalPrice1155(item1155.itemid, item1155.totalAmount - item1155.availableAmount).call();
                 // define listed item object
                 let NFT1155 = {
                     totalPrice,
@@ -121,11 +130,16 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
                     itemId: item1155.itemId,
                     name: metadata.name,
                     description: metadata.description,
-                    image: metadata.image
+                    image: metadata.image,
+                    amount: item1155.availableAmount,
+                    totalAmount: item1155.totalAmount
                 }
 
                 // Add listed item to list/sold items array based on item.sold status
-                if (item1155.sold) {
+                if (!item1155.stockCleared && item1155.sold) {
+                    soldItems1155.push(NFT1155);
+                    listedItems1155.push(NFT1155);
+                } else if (item1155.stockCleared && item1155.sold) {
                     soldItems1155.push(NFT1155);
                 } else {
                     listedItems1155.push(NFT1155);
@@ -147,7 +161,7 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
 
     if (loading) return (
         <main style={{ padding: "1rem 0" }}>
-            {isConnected == true ? <h2>Loading...</h2> : (<h2>Connect Your Wallet...</h2>)}
+            {isConnected === true ? <h2>Loading...</h2> : (<h2>Connect Your Wallet...</h2>)}
         </main>
     )
     return (
@@ -161,7 +175,8 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
                             {listedItems.map((item, idx) => (
                                 <Col key={idx} className="overflow-hidden">
                                     <Card>
-                                        <Card.Img variant="top" src={item.image} />
+                                        <Card.Title>{item.name}</Card.Title>
+                                        <Card.Img variant="top" width={230} height={300} src={item.image} />
                                         <Card.Footer>{web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
                                     </Card>
                                 </Col>
@@ -184,8 +199,14 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
                             {listedItems1155.map((item, idx) => (
                                 <Col key={idx} className="overflow-hidden">
                                     <Card>
-                                        <Card.Img variant="top" src={item.image} />
-                                        <Card.Footer>{web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
+                                        <Card.Body color="secondary">
+                                            <Card.Title>{item.name}</Card.Title>
+                                            <Card.Img variant="top" src={item.image} />
+                                            <Card.Text>
+                                                No. of NFTs: {item.amount} / {item.totalAmount}
+                                            </Card.Text>
+                                        </Card.Body>
+                                        <Card.Footer>{web3.utils.fromWei(item.price)} ETH</Card.Footer>
                                     </Card>
                                 </Col>
                             ))}

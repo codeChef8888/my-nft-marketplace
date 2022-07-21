@@ -65,7 +65,7 @@ export default function MyPurchases({ marketPlace, nft, nft1155, account, isConn
 
     if (loading) return (
         <main style={{ padding: "1rem 0" }}>
-            {isConnected == true ? <h2>Loading...</h2> : (<h2>Connect Your Wallet...</h2>)}
+            {isConnected === true ? <h2>Loading...</h2> : (<h2>Connect Your Wallet...</h2>)}
         </main>
     )
     return (

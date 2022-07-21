@@ -117,3 +117,10 @@ button {
   background: #247BA0;
   color: #fff;
 }
+
+img.card-img-top {
+  overflow: hidden;
+  width: 236px;
+  height: 350px;
+  object-fit: contain;
+}

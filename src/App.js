@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Spinner } from 'react-bootstrap';
-import Web3 from 'web3';
 import Navigation from './components/NavBar';
 import Home from './components/Home.js'
 import CreateNFT from './components/CreateNFT.js'
@@ -10,7 +9,7 @@ import MyAuctionedNFTs from './components/MyAuctionedNFTs.js'
 import MyPurchases from './components/MyPurchasedNFTs.js'
 import { useNFT, useNFT1155, useMarketPlace } from './hooks/useContract';
 import './App.css';
-import { useAccount, WagmiConfig } from "wagmi";
+import { WagmiConfig } from "wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { chains, wagmiClient } from "./libs/rainbowKit";
 import { useWeb3 } from './libs/useWeb3';

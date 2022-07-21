@@ -59,10 +59,13 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
   const loadMarketplaceItems1155 = async () => {
     // Load all unsold items
     const itemCount = await marketPlace.methods.itemCount1155().call();
+
     let items1155 = [];
     for (let i = 1; i <= itemCount; i++) {
       const item1155 = await marketPlace.methods.items1155(i).call();
-      if (!item1155.sold) {
+
+      if (!item1155.stockCleared) {
+        console.log([itemCount, item1155], "Ma nft1155 LOAD MA XU")
         // get uri url from nft contract
         const tokenURI = await nft1155.methods.tokenURIs(item1155.itemid).call(); //calling the Struct and directly passing to the fetch function
         // use uri to fetch the nft metadata stored on ipfs 
@@ -74,7 +77,8 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
           itemId: item1155.itemid,
           seller: item1155.seller,
           price: item1155.price,
-          amount: item1155.amount,
+          amount: item1155.availableAmount,
+          totalAmount: item1155.totalAmount,
           name: metadata.name,
           description: metadata.description,
           image: metadata.image
@@ -105,15 +109,17 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
 
     try {
       // get total price of item (item price + fee)
+      console.log("1st Steeeeeeep");
       let totalPrice = await marketPlace.methods.getTotalPrice1155(item.itemId, amount).call();
       console.log([amount, totalPrice.toString()], "nft1155 selling price")
       await marketPlace.methods.purchaseItem1155(item.itemId, amount).send({ from: account, value: totalPrice }).on('transactionHash', (hash) => {
+        console.log("2nd stepppppppp")
         toggle(); // Modal Banda
         setloading(false);
 
       });
-    } catch (error) {
-      console.log(error)
+    } catch (e) {
+      console.log(e.message);
     }
 
     loadMarketplaceItems1155();
@@ -146,9 +152,9 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
               {items.map((item, idx) => (
                 <Col key={idx} className="overflow-hidden">
                   <Card>
-                    <Card.Img variant="top" src={item.image} />
                     <Card.Body color="secondary">
                       <Card.Title>{item.name}</Card.Title>
+                      <Card.Img variant="top" src={item.image} />
                       <Card.Text>
                         {item.description}
                       </Card.Text>
@@ -189,7 +195,7 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
                         {item.description}
                       </Card.Text>
                       <Card.Text>
-                        No. of NFTs: {item.amount}
+                        No. of NFTs: {item.amount} / {item.totalAmount}
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     Link
 } from "react-router-dom";
-import { Navbar, Nav, Button, Container } from 'react-bootstrap'
+import { Navbar, Nav, Container } from 'react-bootstrap'
 import market from '../nft.png';
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 

@@ -324,7 +324,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "availableAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalAmount",
         "type": "uint256"
       },
       {
@@ -345,6 +350,11 @@
       {
         "internalType": "bool",
         "name": "sold",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "stockCleared",
         "type": "bool"
       }
     ],
