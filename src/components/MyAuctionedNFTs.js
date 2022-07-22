@@ -175,8 +175,10 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
                             {listedItems.map((item, idx) => (
                                 <Col key={idx} className="overflow-hidden">
                                     <Card>
-                                        <Card.Title>{item.name}</Card.Title>
-                                        <Card.Img variant="top" width={230} height={300} src={item.image} />
+                                        <Card.Body color="secondary" >
+                                            <Card.Title>{item.name}</Card.Title>
+                                            <Card.Img variant="top" width={230} height={300} src={item.image} />
+                                        </Card.Body>
                                         <Card.Footer>{web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
                                     </Card>
                                 </Col>

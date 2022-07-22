@@ -10,7 +10,6 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
   const account = address;
   const [loading, setloading] = useState(true);
   const [items, setItems] = useState([]);
-  const [countItem, setCountItem] = useState('');
   const [items1155, setItems1155] = useState([]);
   const [itemTog1155, setItemTog1155] = useState('');
   const { isShowing, toggle } = useModal1155();
@@ -23,7 +22,6 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
     console.log(marketPlace, "yo bhitra chireypachi")
     try {
       itemCount = await marketPlace.methods.itemCount().call();
-      setCountItem(itemCount.length);
     } catch (e) {
       console.log(e.message);
     }
@@ -152,9 +150,9 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
               {items.map((item, idx) => (
                 <Col key={idx} className="overflow-hidden">
                   <Card>
+                    <Card.Img variant="top" src={item.image} />
                     <Card.Body color="secondary">
                       <Card.Title>{item.name}</Card.Title>
-                      <Card.Img variant="top" src={item.image} />
                       <Card.Text>
                         {item.description}
                       </Card.Text>
@@ -210,7 +208,7 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
                               else alert("This NFT1155 belongs to you");
                             } else alert("Connect Your wallet First!!!")
                           }
-                        }>Buy</Button>
+                        }>Buy for {web3.utils.fromWei(item.price, 'ether')} ETH per NFT</Button>
                         <Modal1155 web3={web3} isShowing={isShowing} toggle={toggle} buyMarketNFT1155={buyMarketNFT1155} item={itemTog1155} />
                       </div>
                     </Card.Footer>
