@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Row, Form, Button } from "react-bootstrap";
 import { create as ipfsHttpClient } from "ipfs-http-client";
+import { useAccount } from "wagmi";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
-const Create = ({ marketPlace, nft, account, isConnected, web3 }) => {
+const Create = ({ marketPlace, nft, web3 }) => {
 
   // let web3 = new Web3(Web3.givenProvider || process.env.REACT_APP_RPC_URL);
   // const web3 = useWeb3();
+  const { address, isConnected } = useAccount();
+  const account = address;
 
   const [image, setImage] = useState("");
   const [price, setPrice] = useState(null);
@@ -51,7 +54,7 @@ const Create = ({ marketPlace, nft, account, isConnected, web3 }) => {
   const mintThenList = async (result) => {
     const uri = `https://ipfs.infura.io/ipfs/${result.path}`; //Points to metadata of the NFT located on IPFS.
     console.log(result, "this is the result haaaaiiii");
-    if (nft != null) {
+    try {
       console.log("nft is not null");
       //Mint the NFT
       await nft.methods
@@ -88,6 +91,8 @@ const Create = ({ marketPlace, nft, account, isConnected, web3 }) => {
               console.log(totalItem, "la banyou tmro NFT lai");
             });
         });
+    } catch (e) {
+      console.log(e.message);
     }
   };
   return (

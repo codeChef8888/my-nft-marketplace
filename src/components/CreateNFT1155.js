@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { Row, Form, Button } from 'react-bootstrap'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
+import { useAccount } from 'wagmi'
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
-const CreateNFT1155 = ({ marketPlace, nft1155, account, isConnected, web3 }) => {
+const CreateNFT1155 = ({ marketPlace, nft1155, web3 }) => {
+    const { address, isConnected } = useAccount();
+    const account = address;
 
     const [image, setImage] = useState('')
     const [price, setPrice] = useState(null)
@@ -41,7 +44,7 @@ const CreateNFT1155 = ({ marketPlace, nft1155, account, isConnected, web3 }) => 
     const mintThenList1155 = async (result, amount) => {
         const uri = `https://ipfs.infura.io/ipfs/${result.path}`; //Points to metadata of the NFT located on IPFS.
         console.log(result, 'this is the result haaaaiiii');
-        if (nft1155 != null) {
+        try {
 
             console.log("nft is not null");
             console.log(amount, "nft amount");
@@ -69,6 +72,8 @@ const CreateNFT1155 = ({ marketPlace, nft1155, account, isConnected, web3 }) => 
                             console.log(totalItem, "la banyou harmo NFT lai");
                         });
                 });
+        } catch (e) {
+            console.log(e.message);
         }
 
     }
@@ -91,7 +96,14 @@ const CreateNFT1155 = ({ marketPlace, nft1155, account, isConnected, web3 }) => 
                             <Form.Control onChange={(e) => setPrice(e.target.value)} size="lg" required type="number" placeholder="Price in ETH" />
                             <Form.Control onChange={(e) => setAmount(e.target.value)} size="lg" required type="number" placeholder="No. of Copies" />
                             <div className="d-grid px-0">
-                                <Button onClick={createNFT1155} variant="primary" size="lg">
+                                <Button onClick={
+                                    () => {
+                                        if (isConnected)
+                                            createNFT1155();
+                                        else alert("Please Connect Your Wallet First!!!");
+                                    }
+
+                                } variant="primary" size="lg">
                                     Create & List NFT!
                                 </Button>
                             </div>

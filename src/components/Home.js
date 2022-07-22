@@ -18,12 +18,10 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
   const loadMarketplaceItems = async () => {
     // Load all unsold items
     var itemCount;
-
-    console.log(marketPlace, "yo bhitra chireypachi")
     try {
       itemCount = await marketPlace.methods.itemCount().call();
     } catch (e) {
-      console.log(e.message);
+      console.log(e.message, "Error Marketplace itemCount");
     }
     let items = [];
     for (let i = 1; i <= itemCount; i++) {
@@ -31,22 +29,24 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
 
       if (!item.sold) {
         // get uri url from nft contract
-        const uri = await nft.methods.tokenURI(item.itemid).call();
-        // use uri to fetch the nft metadata stored on ipfs 
-        const response = await fetch(uri);
-        const metadata = await response.json();
-        // get total price of item (item price + fee)
-        const totalPrice = await marketPlace.methods.getTotalPrice(item.itemid).call();
-        // Add item to items array
-        console.log([item.itemid, metadata.name, metadata.image], "mero returned vava")
-        items.push({
-          totalPrice,
-          itemId: item.itemid,
-          seller: item.seller,
-          name: metadata.name,
-          description: metadata.description,
-          image: metadata.image
-        });
+        try {
+          const uri = await nft.methods.tokenURI(item.itemid).call();
+          // use uri to fetch the nft metadata stored on ipfs 
+          const response = await fetch(uri);
+          const metadata = await response.json();
+          // get total price of item (item price + fee)
+          const totalPrice = await marketPlace.methods.getTotalPrice(item.itemid).call();
+          // Add item to items array
+          console.log([item.itemid, metadata.name, metadata.image], "mero returned vava")
+          items.push({
+            totalPrice,
+            itemId: item.itemid,
+            seller: item.seller,
+            name: metadata.name,
+            description: metadata.description,
+            image: metadata.image
+          });
+        } catch (e) { console.log(e.message, "Error From LoadMarketPlaceItems") }
       }
     }
     setloading(false);

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import {
     Link
 } from "react-router-dom";
-import { Navbar, Nav, Container } from 'react-bootstrap'
-import market from '../nft.png';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap'
+import market from '../assests/nft.png';
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 class Navigation extends Component {
@@ -25,9 +25,7 @@ class Navigation extends Component {
                             <Nav.Link as={Link} to="/my-purchases">My Purchases</Nav.Link>
                         </Nav>
                         <Nav>
-
                             <ConnectButton />
-
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

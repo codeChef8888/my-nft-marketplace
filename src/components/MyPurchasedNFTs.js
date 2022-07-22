@@ -1,9 +1,11 @@
-import { throws } from 'assert';
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
+import { useAccount } from 'wagmi';
 
-export default function MyPurchases({ marketPlace, nft, nft1155, account, isConnected, web3 }) {
 
+export default function MyPurchases({ marketPlace, nft, nft1155, web3 }) {
+    const { address, isConnected } = useAccount();
+    const account = address;
     const [loading, setLoading] = useState(true);
     const [purchases, setPurchases] = useState([]);
     const [purchases1155, setPurchases1155] = useState([]);
@@ -146,10 +148,11 @@ export default function MyPurchases({ marketPlace, nft, nft1155, account, isConn
                             ))}
                         </Row>
                     </div>
-                    : (
+                    : (<>
                         <main style={{ padding: "1rem 0" }}>
                             <h2>No purchased NFT721</h2>
                         </main>
+                    </>
                     )}
             </div>
             <div className="flex justify-center">
@@ -171,10 +174,11 @@ export default function MyPurchases({ marketPlace, nft, nft1155, account, isConn
                             ))}
                         </Row>
                     </div>
-                    : (
+                    : (<>
                         <main style={{ padding: "1rem 0" }}>
                             <h2>No purchased NFT1155</h2>
                         </main>
+                    </>
                     )}
             </div>
         </div>
