@@ -170,14 +170,14 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
                 {soldItems.length > 0 && renderSoldItems(soldItems)}
                 {listedItems.length > 0 ?
                     <div className="px-5 py-3 container">
-                        <h2>Listed EC721</h2>
+                        <h2>Listed ERC721</h2>
                         <Row xs={1} md={2} lg={4} className="g-4 py-3">
                             {listedItems.map((item, idx) => (
                                 <Col key={idx} className="overflow-hidden">
                                     <Card>
+                                        <Card.Img variant="top" src={item.image} />
                                         <Card.Body color="secondary" >
                                             <Card.Title>{item.name}</Card.Title>
-                                            <Card.Img variant="top" width={230} height={300} src={item.image} />
                                         </Card.Body>
                                         <Card.Footer>{web3.utils.fromWei(item.totalPrice)} ETH</Card.Footer>
                                     </Card>
@@ -197,23 +197,27 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, account, is
                 {listedItems1155.length > 0 ?
                     <div className="px-5 py-3 container">
                         <h2>Listed ERC1155</h2>
-                        <Row xs={1} md={2} lg={4} className="g-4 py-3">
-                            {listedItems1155.map((item, idx) => (
-                                <Col key={idx} className="overflow-hidden">
-                                    <Card>
-                                        <Card.Body color="secondary">
-                                            <Card.Title>{item.name}</Card.Title>
-                                            <Card.Img variant="top" src={item.image} />
-                                            <Card.Text>
-                                                No. of NFTs: {item.amount} / {item.totalAmount}
-                                            </Card.Text>
-                                        </Card.Body>
-                                        <Card.Footer>{web3.utils.fromWei(item.price)} ETH</Card.Footer>
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
+                        <div>
+                            <Row xs={1} md={2} lg={4} className="g-4 py-3">
+                                {listedItems1155.map((item, idx) => (
 
+                                    <Col key={idx} className="overflow-hidden">
+                                        <Card>
+                                            <Card.Img variant="top" overflow="hidden" src={item.image} />
+                                            <Card.Body color="secondary">
+                                                <Card.Title>{item.name}</Card.Title>
+                                                <Card.Text>
+                                                    No. of NFTs: {item.amount} / {item.totalAmount}
+                                                </Card.Text>
+                                            </Card.Body>
+                                            <Card.Footer>
+                                                For {web3.utils.fromWei(item.totalPrice, 'ether')} ETH - Recieved {web3.utils.fromWei(item.price, 'ether')} ETH
+                                            </Card.Footer>
+                                        </Card>
+                                    </Col>
+                                ))}
+                            </Row>
+                        </div>
                     </div>
                     : (
                         <main style={{ padding: "1rem 0" }}>

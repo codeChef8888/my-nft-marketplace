@@ -148,7 +148,7 @@ export default function MyPurchases({ marketPlace, nft, nft1155, account, isConn
                     </div>
                     : (
                         <main style={{ padding: "1rem 0" }}>
-                            <h2>No purchases</h2>
+                            <h2>No purchased NFT721</h2>
                         </main>
                     )}
             </div>
@@ -173,7 +173,7 @@ export default function MyPurchases({ marketPlace, nft, nft1155, account, isConn
                     </div>
                     : (
                         <main style={{ padding: "1rem 0" }}>
-                            <h2>No purchases</h2>
+                            <h2>No purchased NFT1155</h2>
                         </main>
                     )}
             </div>
