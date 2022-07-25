@@ -160,9 +160,8 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
                     <Card.Footer>
                       <div className='d-grid'>
                         <Button onClick={() => {
-                          if (isConnected)
-                            buyMarketNFT721(item)
-                          else alert("Please Connect Your Wallet First")
+                          if (!isConnected) alert("Please Connect Your Wallet First");
+                          buyMarketNFT721(item);
                         }} variant="primary" size="lg">
                           Buy for {web3.utils.fromWei(item.totalPrice, 'ether')} ETH
                         </Button>
@@ -200,13 +199,12 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
                       <div className='d-grid'>
                         <Button className="button-default" onClick={
                           () => {
-                            if (isConnected) {
-                              if (item.seller !== account) {
-                                toggle();
-                                setItemTog1155(item);
-                              }
-                              else alert("This NFT1155 belongs to you");
-                            } else alert("Connect Your wallet First!!!")
+                            if (!isConnected) alert("Please Connect Your Wallet First!!!");
+                            if (item.seller !== account) {
+                              toggle();
+                              setItemTog1155(item);
+                            }
+                            else alert("This NFT1155 belongs to you");
                           }
                         }>Buy for {web3.utils.fromWei(item.price, 'ether')} ETH per NFT</Button>
                         <Modal1155 web3={web3} isShowing={isShowing} toggle={toggle} buyMarketNFT1155={buyMarketNFT1155} item={itemTog1155} />

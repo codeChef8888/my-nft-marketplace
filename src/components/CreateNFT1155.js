@@ -96,14 +96,10 @@ const CreateNFT1155 = ({ marketPlace, nft1155, web3 }) => {
                             <Form.Control onChange={(e) => setPrice(e.target.value)} size="lg" required type="number" placeholder="Price in ETH" />
                             <Form.Control onChange={(e) => setAmount(e.target.value)} size="lg" required type="number" placeholder="No. of Copies" />
                             <div className="d-grid px-0">
-                                <Button onClick={
-                                    () => {
-                                        if (isConnected)
-                                            createNFT1155();
-                                        else alert("Please Connect Your Wallet First!!!");
-                                    }
-
-                                } variant="primary" size="lg">
+                                <Button onClick={() => {
+                                    if (!isConnected) alert("Please Connect Your Wallet First!!!");
+                                    createNFT1155();
+                                }} variant="primary" size="lg">
                                     Create & List NFT!
                                 </Button>
                             </div>

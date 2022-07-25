@@ -118,13 +118,9 @@ export default function MyPurchases({ marketPlace, nft, nft1155, web3 }) {
 
 
     useEffect(() => {
-        if (isConnected) {
-            loadPurchasedNFTs();
-            loadPurchasedNFT1155s();
-        }
-        else {
-            alert("Please Connect Your Wallet");
-        }
+        if (!isConnected) alert("Please Connect Your Wallet");
+        loadPurchasedNFTs();
+        loadPurchasedNFT1155s();
     }, []);
 
     if (loading) return (

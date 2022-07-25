@@ -32,22 +32,17 @@ const Create = ({ marketPlace, nft, web3 }) => {
   };
 
   const createNFT = async () => {
-    if (isConnected) {
-      if (!image || !price || !name || !description) return;
-      try {
-        //Upload all of the metadata to IPFS
-        const result = await client.add(
-          JSON.stringify({ image, price, name, description })
-        ); //Adding metadata in JSON with Object containing metadata.
-        console.log(image, price, name, description, "yei ho resuslt");
-        //Mint NFT and Auction it in Marketplace.
-        mintThenList(result);
-      } catch (error) {
-        console.log("ipfs uri upload error: ", error);
-      }
-    }
-    else {
-      alert("Connect your wallet first!!!")
+    if (!image || !price || !name || !description) return;
+    try {
+      //Upload all of the metadata to IPFS
+      const result = await client.add(
+        JSON.stringify({ image, price, name, description })
+      ); //Adding metadata in JSON with Object containing metadata.
+      console.log(image, price, name, description, "yei ho resuslt");
+      //Mint NFT and Auction it in Marketplace.
+      mintThenList(result);
+    } catch (error) {
+      console.log("ipfs uri upload error: ", error);
     }
   };
 
@@ -134,9 +129,10 @@ const Create = ({ marketPlace, nft, web3 }) => {
               />
               <div className="d-grid px-0">
                 <Button
-                  onClick={
-                    createNFT
-                  }
+                  onClick={() => {
+                    if (!isConnected) alert("Please Connect Your Wallet First!!!");
+                    createNFT();
+                  }}
                   variant="primary"
                   size="lg"
                 >
