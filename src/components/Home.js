@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import Modal1155 from './BuyModalNFT1155';
 import useModal1155 from '../hooks/useModal';
+import { useMarketPlace } from "../hooks/useContract";
 
 import { useAccount } from 'wagmi'
 const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, web3 }) => {
   //Setting up our required state variables.
   const { address, isConnected } = useAccount();
+  const { loadMarketPlaceItems721, loadMarketPlaceItems1155 } = useMarketPlace();
   const account = address;
   const [loading, setloading] = useState(true);
   const [items, setItems] = useState([]);
@@ -14,77 +16,14 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
   const [itemTog1155, setItemTog1155] = useState('');
   const { isShowing, toggle } = useModal1155();
 
-  //Function to Load NFT in MarketPlace for Display.
-  const loadMarketplaceItems = async () => {
-    // Load all unsold items
-    var itemCount;
-    try {
-      itemCount = await marketPlace.methods.itemCount().call();
-    } catch (e) {
-      console.log(e.message, "Error Marketplace itemCount");
-    }
-    let items = [];
-    for (let i = 1; i <= itemCount; i++) {
-      const item = await marketPlace.methods.items(i).call();
-
-      if (!item.sold) {
-        // get uri url from nft contract
-        try {
-          const uri = await nft.methods.tokenURI(item.itemid).call();
-          // use uri to fetch the nft metadata stored on ipfs 
-          const response = await fetch(uri);
-          const metadata = await response.json();
-          // get total price of item (item price + fee)
-          const totalPrice = await marketPlace.methods.getTotalPrice(item.itemid).call();
-          // Add item to items array
-          console.log([item.itemid, metadata.name, metadata.image], "mero returned vava")
-          items.push({
-            totalPrice,
-            itemId: item.itemid,
-            seller: item.seller,
-            name: metadata.name,
-            description: metadata.description,
-            image: metadata.image
-          });
-        } catch (e) { console.log(e.message, "Error From LoadMarketPlaceItems") }
-      }
-    }
+  const loadItems721 = async () => {
+    loadMarketPlaceItems721().then((items) => setItems(items));
     setloading(false);
-    setItems(items);
   };
 
-  //Function to Load NFT1155 in MarketPlace for Display.
-  const loadMarketplaceItems1155 = async () => {
-    // Load all unsold items
-    const itemCount = await marketPlace.methods.itemCount1155().call();
-
-    let items1155 = [];
-    for (let i = 1; i <= itemCount; i++) {
-      const item1155 = await marketPlace.methods.items1155(i).call();
-
-      if (!item1155.stockCleared) {
-        console.log([itemCount, item1155], "Ma nft1155 LOAD MA XU")
-        // get uri url from nft contract
-        const tokenURI = await nft1155.methods.tokenURIs(item1155.itemid).call(); //calling the Struct and directly passing to the fetch function
-        // use uri to fetch the nft metadata stored on ipfs 
-
-        const response = await fetch(tokenURI);
-        const metadata = await response.json();
-        // Add item to items array
-        items1155.push({
-          itemId: item1155.itemid,
-          seller: item1155.seller,
-          price: item1155.price,
-          amount: item1155.availableAmount,
-          totalAmount: item1155.totalAmount,
-          name: metadata.name,
-          description: metadata.description,
-          image: metadata.image
-        });
-      }
-    }
+  const loadItems1155 = async () => {
+    loadMarketPlaceItems1155().then((items) => setItems1155(items));
     setloading(false);
-    setItems1155(items1155);
   };
 
   const buyMarketNFT721 = async (item) => {
@@ -99,12 +38,10 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
     } else {
       alert("This NFT Belongs to you!!!");
     }
-
-    loadMarketplaceItems();
+    loadItems721();
   };
 
   const buyMarketNFT1155 = async (item, amount) => {
-
     try {
       // get total price of item (item price + fee)
       console.log("1st Steeeeeeep");
@@ -119,14 +56,13 @@ const Home = ({ setCurrentUser, setUserActiveStatus, marketPlace, nft, nft1155, 
     } catch (e) {
       console.log(e.message);
     }
-
-    loadMarketplaceItems1155();
+    loadItems1155();
   };
 
   //Firing the loadMarketplaceItems function when this functional component loads for once.
   useEffect(() => {
-    loadMarketplaceItems();
-    loadMarketplaceItems1155();
+    loadItems721();
+    loadItems1155();
   }, []);
 
   useEffect(() => {

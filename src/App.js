@@ -16,23 +16,18 @@ class App extends Component {
 
 
   async loadBlockchainData() {
-
+    //Load Web3
     const web3 = useWeb3();
     this.setState({ web3: web3 });
-
     //Load NFT Contract
-    const nftContract = useNFT(); //import NFT json.
-    this.setState({ nft: nftContract });
-
-    //Load NFT1155 Contract into const variable nftContract.
-    const nft1155Contract = useNFT1155();
-    this.setState({ nft1155: nft1155Contract });
-
-
-    //Load Marketplace Contract into const variable tether.
-    const marketPlaceContract = useMarketPlace();
-    this.setState({ marketPlace: marketPlaceContract });
-
+    const { nft } = useNFT(); //import NFT json.
+    this.setState({ nft: nft });
+    //Load NFT1155 Contract into const variable
+    const { nft1155 } = useNFT1155();
+    this.setState({ nft1155: nft1155 });
+    //Load Marketplace Contract into const variable 
+    const { marketPlace } = useMarketPlace();
+    this.setState({ marketPlace: marketPlace });
     this.setState({ loading: false })
   }
 

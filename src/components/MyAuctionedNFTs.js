@@ -155,9 +155,13 @@ export default function MyAuctionedNFTs({ marketPlace, nft, nft1155, web3 }) {
     }
 
     useEffect(() => {
-        if (!isConnected) alert("Connect your wallet first!!!");
-        loadListedItems();
-        loadListedItems1155();
+        if (isConnected) {
+            loadListedItems();
+            loadListedItems1155();
+        }
+        else { alert("Connect your wallet first!!!"); }
+
+
     }, []);
 
     if (loading) return (
