@@ -66,7 +66,7 @@ class App extends Component {
               </div>
             ) : (
               <Routes>
-                <Route path="/" element={<Home setCurrentUser={(addr) => this.setState({ account: addr })} setUserActiveStatus={(bool) => this.setState({ userStatus: bool })} marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} web3={this.state.web3} />} />
+                <Route path="/" element={<Home setCurrentUser={(addr) => this.setState({ account: addr })} setUserActiveStatus={(bool) => this.setState({ userStatus: bool })} web3={this.state.web3} />} />
                 <Route path="/createNFT" element={<CreateNFT marketPlace={this.state.marketPlace} nft={this.state.nft} account={this.state.account} isConnected={this.state.userStatus} web3={this.state.web3} />} />
                 <Route path="/createNFT1155" element={<CreateNFT1155 marketPlace={this.state.marketPlace} nft1155={this.state.nft1155} account={this.state.account} isConnected={this.state.userStatus} web3={this.state.web3} />} />
                 <Route path="/my-listed-nfts" element={<MyAuctionedNFTs marketPlace={this.state.marketPlace} nft={this.state.nft} nft1155={this.state.nft1155} account={this.state.account} isConnected={this.state.userStatus} web3={this.state.web3} />} />

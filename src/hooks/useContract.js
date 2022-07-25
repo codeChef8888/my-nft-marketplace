@@ -3,12 +3,12 @@ import { useWeb3 } from "../libs/useWeb3";
 import NFT from "../contracts/abis/NFT.json";
 import NFT1155 from "../contracts/abis/NFT1155.json";
 import Marketplace from "../contracts/abis/Marketplace.json";
+import { useCurrentUser } from "../libs/useCurrentUser";
 
 
-
-const useContract = (abiArtifact, address) => {
+const useContract = (abiArtifact, contractAddress) => {
     const web3 = useWeb3();
-    return new web3.eth.Contract(abiArtifact, address);
+    return new web3.eth.Contract(abiArtifact, contractAddress);
 };
 
 export const useNFT = () => {
@@ -27,7 +27,6 @@ export const useNFT1155 = () => {
 };
 
 export const useMarketPlace = () => {
-
     const marketPlace = useContract(Marketplace, getMarketPlaceAddress());
 
     const itemCount721 = () => marketPlace.methods.itemCount().call();
@@ -37,6 +36,14 @@ export const useMarketPlace = () => {
     const item1155 = (itemID) => marketPlace.methods.items1155(itemID).call();
 
     const getTotalPrice721 = (itemID) => marketPlace.methods.getTotalPrice(itemID).call();
+    const getTotalPrice1155 = (item, amount) => marketPlace.methods.getTotalPrice1155(item.itemId, amount).call();
+
+    const buy721 = (item, account) => marketPlace.methods.purchaseItem(item.itemId).send({ from: account, value: item.totalPrice }).on('transactionHash', (hash) => {
+        console.log(hash, "nft721 purchased transaction hash...");
+    });
+    const buy1155 = (item, amount, totalAmount, account) => marketPlace.methods.purchaseItem1155(item.itemId, amount).send({ from: account, value: totalAmount }).on('transactionHash', (hash) => {
+        console.log(hash, "nft1155 purchased transaction hash...");
+    });
 
     const loadMarketPlaceItems721 = async () => {
         let items = [];
@@ -107,7 +114,7 @@ export const useMarketPlace = () => {
         return items;
     }
 
-    return { marketPlace, loadMarketPlaceItems721, loadMarketPlaceItems1155 };
+    return { marketPlace, loadMarketPlaceItems721, loadMarketPlaceItems1155, getTotalPrice1155, buy721, buy1155 };
 };
 
 export default useContract;
