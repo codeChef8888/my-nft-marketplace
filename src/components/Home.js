@@ -92,7 +92,7 @@ const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
                       <div className='d-grid'>
                         <Button onClick={() => {
                           if (!isConnected) alert("Please Connect Your Wallet First");
-                          buyMarketNFT721(item);
+                          else buyMarketNFT721(item);
                         }} variant="primary" size="lg">
                           Buy for {web3.utils.fromWei(item.totalPrice, 'ether')} ETH
                         </Button>

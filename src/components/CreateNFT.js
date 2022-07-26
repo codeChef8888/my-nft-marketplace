@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import { Row, Form, Button } from "react-bootstrap";
-import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useAccount } from "wagmi";
+import { createNFT721, uploadToIPFS } from "../hooks/useUploadToIPFS";
 
-const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
-
-const Create = ({ marketPlace, nft, web3 }) => {
-
+const Create = () => {
   // let web3 = new Web3(Web3.givenProvider || process.env.REACT_APP_RPC_URL);
-  // const web3 = useWeb3();
   const { address, isConnected } = useAccount();
   const account = address;
 
@@ -17,79 +13,6 @@ const Create = ({ marketPlace, nft, web3 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const uploadToIPFS = async (event) => {
-    event.preventDefault();
-    const file = event.target.files[0];
-    if (typeof file !== "undefined") {
-      try {
-        const result = await client.add(file); // IPFS client
-        console.log(result, "yo result ho");
-        setImage(`https://ipfs.infura.io/ipfs/${result.path}`); //setting the Image to the link where we can img file on IPFS
-      } catch (error) {
-        console.log("ipfs image upload error: ", error);
-      }
-    }
-  };
-
-  const createNFT = async () => {
-    if (!image || !price || !name || !description) return;
-    try {
-      //Upload all of the metadata to IPFS
-      const result = await client.add(
-        JSON.stringify({ image, price, name, description })
-      ); //Adding metadata in JSON with Object containing metadata.
-      console.log(image, price, name, description, "yei ho resuslt");
-      //Mint NFT and Auction it in Marketplace.
-      mintThenList(result);
-    } catch (error) {
-      console.log("ipfs uri upload error: ", error);
-    }
-  };
-
-  const mintThenList = async (result) => {
-    const uri = `https://ipfs.infura.io/ipfs/${result.path}`; //Points to metadata of the NFT located on IPFS.
-    console.log(result, "this is the result haaaaiiii");
-    try {
-      console.log("nft is not null");
-      //Mint the NFT
-      await nft.methods
-        .mint(uri)
-        .send({ from: account })
-        .on("transactionHash", (hash) => {
-          console.log("nft minted");
-        });
-
-      // get tokenId of new nft
-      const tokenId = await nft.methods.tokenCount().call();
-      console.log(tokenId, "this is the token id");
-      console.log(marketPlace._address, "this is the market addresss");
-
-      // add nft to marketplace
-      const listingPrice = web3.utils.toWei(price.toString(), "ether");
-      console.log(listingPrice, "this is the NFT price in wei");
-      // approve marketplace to spend nft
-
-      await nft.methods
-        .setApprovalForAll(marketPlace._address, true)
-        .send({ from: account })
-        .on("transactionHash", (hash) => {
-          console.log(
-            [nft._address, tokenId, listingPrice],
-            "la chireyma NFT banauna lai"
-          );
-          marketPlace.methods
-            .makeItem(nft._address, tokenId, listingPrice)
-            .send({ from: account })
-            .on("transactionHash", (hash) => {
-              console.log("hum Idharr");
-              const totalItem = marketPlace.methods.itemCount().call();
-              console.log(totalItem, "la banyou tmro NFT lai");
-            });
-        });
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
   return (
     <div className="container-fluid mt-5">
       <div className="row">
@@ -104,7 +27,15 @@ const Create = ({ marketPlace, nft, web3 }) => {
                 type="file"
                 required
                 name="file"
-                onChange={uploadToIPFS}
+                onChange={(event) => {
+                  uploadToIPFS(event.target.files[0])
+                    .then((path) =>
+                      setImage(`https://ipfs.infura.io/ipfs/${path}`)
+                    )
+                    .catch((error) =>
+                      console.log(error.message, "UPLOAD TO IPFS ERROR!!!!")
+                    );
+                }}
               />
               <Form.Control
                 onChange={(e) => setName(e.target.value)}
@@ -130,8 +61,9 @@ const Create = ({ marketPlace, nft, web3 }) => {
               <div className="d-grid px-0">
                 <Button
                   onClick={() => {
-                    if (!isConnected) alert("Please Connect Your Wallet First!!!");
-                    createNFT();
+                    if (!isConnected)
+                      alert("Please Connect Your Wallet First!!!");
+                    else createNFT721(image, price, name, description, account);
                   }}
                   variant="primary"
                   size="lg"
