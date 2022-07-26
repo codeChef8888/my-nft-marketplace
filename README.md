@@ -6,8 +6,9 @@
 
 1.Project is developed in React.js.
 2.Before running this Project in dev environment.
--One must have installed a Web3 wallet (MetaMask, Wallet Connect, Rainbow wallet,) on their browser and
--got themselves some test Ropsten Ether from https://faucet.egorfine.com/ to play around with this DApp.
+-One must have installed a Web3 wallet (MetaMask, Wallet Connect, Rainbow wallet) on their browser,
+-set the Wallet Network to Ropsten Testnet and
+-get some test Ropsten Ether from https://faucet.egorfine.com/ to play around with this DApp.
 
 ### To run application in Dev environment i.e. (Ropsten Testnet):
 
