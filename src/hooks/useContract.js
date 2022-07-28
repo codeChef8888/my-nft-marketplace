@@ -7,7 +7,6 @@ import { useWeb3 } from "../libs/useWeb3";
 import NFT from "../contracts/abis/NFT.json";
 import NFT1155 from "../contracts/abis/NFT1155.json";
 import Marketplace from "../contracts/abis/Marketplace.json";
-import { useCurrentUser } from "../libs/useCurrentUser";
 
 const useContract = (abiArtifact, contractAddress) => {
   const web3 = useWeb3();
@@ -193,4 +192,5 @@ export const toWEI = (price) => {
   const web3 = useWeb3();
   return web3.utils.toWei(price.toString(), "ether");
 };
+
 export default useContract;

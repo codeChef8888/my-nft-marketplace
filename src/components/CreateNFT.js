@@ -6,7 +6,6 @@ import { createNFT721, uploadToIPFS } from "../hooks/useUploadToIPFS";
 const Create = () => {
   // let web3 = new Web3(Web3.givenProvider || process.env.REACT_APP_RPC_URL);
   const { address, isConnected } = useAccount();
-  const account = address;
 
   const [image, setImage] = useState("");
   const [price, setPrice] = useState(null);
@@ -63,7 +62,7 @@ const Create = () => {
                   onClick={() => {
                     if (!isConnected)
                       alert("Please Connect Your Wallet First!!!");
-                    else createNFT721(image, price, name, description, account);
+                    else createNFT721(image, price, name, description, address);
                   }}
                   variant="primary"
                   size="lg"

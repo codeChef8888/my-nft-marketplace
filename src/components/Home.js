@@ -1,29 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Button } from 'react-bootstrap';
-import Modal1155 from './BuyModalNFT1155';
-import useModal1155 from '../hooks/useModal';
+import React, { useState, useEffect } from "react";
+import { Row, Col, Card, Button } from "react-bootstrap";
+import Modal1155 from "./BuyModalNFT1155";
+import useModal1155 from "../hooks/useModal";
 import { useMarketPlace } from "../hooks/useContract";
 
-import { useAccount } from 'wagmi'
+import { useAccount } from "wagmi";
 const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
   //Setting up our required state variables.
   const { address, isConnected } = useAccount();
-  const { loadMarketPlaceItems721, loadMarketPlaceItems1155, getTotalPrice1155, buy721, buy1155 } = useMarketPlace();
   const account = address;
+
+  const {
+    loadMarketPlaceItems721,
+    loadMarketPlaceItems1155,
+    getTotalPrice1155,
+    buy721,
+    buy1155,
+  } = useMarketPlace();
+
   const [loading, setloading] = useState(true);
   const [items, setItems] = useState([]);
   const [items1155, setItems1155] = useState([]);
-  const [itemTog1155, setItemTog1155] = useState('');
+  const [itemTog1155, setItemTog1155] = useState("");
   const { isShowing, toggle } = useModal1155();
-
-  const loadItems721 = async () => {
-    loadMarketPlaceItems721().then((items) => setItems(items));
-    setloading(false);
+  const [item721Count, setItem721Count] = useState("");
+  const [item1155Count, setItem1155Count] = useState("");
+  const loadItems721 = () => {
+    loadMarketPlaceItems721().then((items) => {
+      setItems(items);
+      setItem721Count(items.length);
+      setloading(false);
+    });
   };
 
-  const loadItems1155 = async () => {
-    loadMarketPlaceItems1155().then((items) => setItems1155(items));
-    setloading(false);
+  const loadItems1155 = () => {
+    loadMarketPlaceItems1155().then((items) => {
+      setItems1155(items);
+      setItem1155Count(items.length);
+      setloading(false);
+    });
   };
 
   const buyMarketNFT721 = async (item) => {
@@ -43,7 +58,6 @@ const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
   const buyMarketNFT1155 = async (item, amount) => {
     try {
       const totalPrice = await getTotalPrice1155(item, amount);
-      console.log([item.itemId, amount, totalPrice.toString()], "nft1155 selling price")
       await buy1155(item, amount, totalPrice, account).then(() => {
         toggle();
         setloading(false);
@@ -66,16 +80,17 @@ const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
     setUserActiveStatus(isConnected);
   }, [account]);
 
-  if (loading) return (
-    <main style={{ padding: "1rem 0" }}>
-      <h2>Loading....</h2>
-    </main>
-  );
+  if (loading)
+    return (
+      <main style={{ padding: "1rem 0" }}>
+        <h2>Loading....</h2>
+      </main>
+    );
 
   return (
     <div className="flex justify-center">
       <div>
-        {items.length > 0 ?
+        {item721Count > 0 ? (
           <div className="px-5 container">
             <Row xs={1} md={2} lg={4} className="g-4 py-5">
               {items.map((item, idx) => (
@@ -84,17 +99,21 @@ const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
                     <Card.Img variant="top" src={item.image} />
                     <Card.Body color="secondary">
                       <Card.Title>{item.name}</Card.Title>
-                      <Card.Text>
-                        {item.description}
-                      </Card.Text>
+                      <Card.Text>{item.description}</Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                      <div className='d-grid'>
-                        <Button onClick={() => {
-                          if (!isConnected) alert("Please Connect Your Wallet First");
-                          else buyMarketNFT721(item);
-                        }} variant="primary" size="lg">
-                          Buy for {web3.utils.fromWei(item.totalPrice, 'ether')} ETH
+                      <div className="d-grid">
+                        <Button
+                          onClick={() => {
+                            if (!isConnected)
+                              alert("Please Connect Your Wallet First");
+                            else buyMarketNFT721(item);
+                          }}
+                          variant="primary"
+                          size="lg"
+                        >
+                          Buy for {web3.utils.fromWei(item.totalPrice, "ether")}{" "}
+                          ETH
                         </Button>
                       </div>
                     </Card.Footer>
@@ -103,14 +122,14 @@ const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
               ))}
             </Row>
           </div>
-          : (
-            <main style={{ padding: "1rem 0" }}>
-              <h2>Sold Out!!! (NFT721)</h2>
-            </main>
-          )}
+        ) : (
+          <main style={{ padding: "1rem 0" }}>
+            <h2>Sold Out!!! (NFT721)</h2>
+          </main>
+        )}
       </div>
       <div>
-        {items1155.length > 0 ?
+        {item1155Count > 0 ? (
           <div className="px-5 container">
             <Row xs={1} md={2} lg={4} className="g-4 py-5">
               {items1155.map((item, idx) => (
@@ -119,26 +138,34 @@ const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
                     <Card.Img variant="top" src={item.image} />
                     <Card.Body color="secondary">
                       <Card.Title>{item.name}</Card.Title>
-                      <Card.Text>
-                        {item.description}
-                      </Card.Text>
+                      <Card.Text>{item.description}</Card.Text>
                       <Card.Text>
                         No. of NFTs: {item.amount} / {item.totalAmount}
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                      <div className='d-grid'>
-                        <Button className="button-default" onClick={
-                          () => {
-                            if (!isConnected) alert("Please Connect Your Wallet First!!!");
+                      <div className="d-grid">
+                        <Button
+                          className="button-default"
+                          onClick={() => {
+                            if (!isConnected)
+                              alert("Please Connect Your Wallet First!!!");
                             if (item.seller !== account) {
                               toggle();
                               setItemTog1155(item);
-                            }
-                            else alert("This NFT1155 belongs to you");
-                          }
-                        }>Buy for {web3.utils.fromWei(item.price, 'ether')} ETH per NFT</Button>
-                        <Modal1155 web3={web3} isShowing={isShowing} toggle={toggle} buyMarketNFT1155={buyMarketNFT1155} item={itemTog1155} />
+                            } else alert("This NFT1155 belongs to you");
+                          }}
+                        >
+                          Buy for {web3.utils.fromWei(item.price, "ether")} ETH
+                          per NFT
+                        </Button>
+                        <Modal1155
+                          web3={web3}
+                          isShowing={isShowing}
+                          toggle={toggle}
+                          buyMarketNFT1155={buyMarketNFT1155}
+                          item={itemTog1155}
+                        />
                       </div>
                     </Card.Footer>
                   </Card>
@@ -146,14 +173,14 @@ const Home = ({ setCurrentUser, setUserActiveStatus, web3 }) => {
               ))}
             </Row>
           </div>
-          : (
-            <main style={{ padding: "1rem 0" }}>
-              <h2>Sold Out!!! (NFT1155)</h2>
-            </main>
-          )}
+        ) : (
+          <main style={{ padding: "1rem 0" }}>
+            <h2>Sold Out!!! (NFT1155)</h2>
+          </main>
+        )}
       </div>
-    </div >
+    </div>
   );
-}
+};
 
 export default Home;
