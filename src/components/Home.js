@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import Modal1155 from './BuyModalNFT1155';
 import useModal1155 from '../hooks/useModal';
+import { useAccount } from 'wagmi';
 
-const Home = ({ account, marketPlace, nft, nft1155 }) => {
+const Home = ({ setCurrentUser, marketPlace, nft, nft1155 }) => {
   //Setting up our required state variables.
+  const { data } = useAccount();
+  const account = data.address;
+  setCurrentUser(account);
   const [loading, setloading] = useState(true);
   const [items, setItems] = useState([]);
   const [items1155, setItems1155] = useState([]);
@@ -14,9 +18,18 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
   //Function to Load NFT in MarketPlace for Display.
   const loadMarketplaceItems = async () => {
     // Load all unsold items
-    const itemCount = await marketPlace.methods.itemCount().call();
+    var itemCount;
+    console.log(marketPlace, "yo function call agadi.");
+    try {
+      itemCount = await marketPlace.methods.itemCount().call();
+      console.log(itemCount, "This is the Items count");
+    } catch (e) {
+      console.log(e.message);
+    }
+
     let items = [];
     for (let i = 1; i <= itemCount; i++) {
+      console.log(i);
       const item = await marketPlace.methods.items(i).call();
       if (!item.sold) {
         // get uri url from nft contract
@@ -37,6 +50,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
         });
       }
     }
+    console.log(items, "these are the items");
     setloading(false);
     setItems(items);
   };
@@ -44,7 +58,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
   //Function to Load NFT1155 in MarketPlace for Display.
   const loadMarketplaceItems1155 = async () => {
     // Load all unsold items
-    const itemCount = await marketPlace.methods.itemCount1155().call();
+    const itemCount = await marketPlace.methods.getItemCount1155().call();
     let items1155 = [];
     for (let i = 1; i <= itemCount; i++) {
       const item1155 = await marketPlace.methods.items1155(i).call();
@@ -52,7 +66,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
         // get uri url from nft contract
         const tokenURI = await nft1155.methods.tokenURIs(item1155.itemid).call(); //calling the Struct and directly passing to the fetch function
         // use uri to fetch the nft metadata stored on ipfs 
-        
+
         const response = await fetch(tokenURI);
         const metadata = await response.json();
         // Add item to items array
@@ -89,7 +103,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
       // get total price of item (item price + fee)
       let totalPrice = await marketPlace.methods.getTotalPrice1155(item.itemId, amount).call();
       console.log([amount, totalPrice.toString()], "nft1155 selling price")
-      await marketPlace.methods.purchaseItem1155(item.itemId, amount).send({ from: account, value: totalPrice}).on('transactionHash', (hash) => {
+      await marketPlace.methods.purchaseItem1155(item.itemId, amount).send({ from: account, value: totalPrice }).on('transactionHash', (hash) => {
         toggle(); // Modal Banda
         setloading(false);
 
@@ -161,7 +175,7 @@ const Home = ({ account, marketPlace, nft, nft1155 }) => {
                         {item.description}
                       </Card.Text>
                       <Card.Text>
-                      No. of NFTs: {item.amount}
+                        No. of NFTs: {item.amount}
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer>
